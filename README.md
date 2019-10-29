@@ -1,0 +1,1 @@
+In this project I will be creating a Pomodoro Clock. I will be using HTML and CSS to design the clock, and JavaScript to make it interactive.
