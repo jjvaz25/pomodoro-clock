@@ -2,8 +2,7 @@
 <html>
 
 <head>
-  <title>Pomodoro Clock</title>
-  <link rel="stylesheet" href="css-reset.css">
+  <title>countdown timer</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -12,7 +11,6 @@
     <h1>Pomodoro Clock</h1>
     <h2>Focus up!</h2>
   </header>
-<button class="testButton">Test button</button>
   <div class="topButtonContainer">
     <button class="topButton" data-action="pomdoro">Pomodoro</button>
     <button class="topButton" data-action="shortBreak">5 min break</button>
@@ -20,7 +18,7 @@
   </div>
 
   <div class="timerContainer">
-    Choose your timer using the above menu!
+    25:00
   </div>
   <div class="bottomButtonContainer">
     <button class="bottomButton" data-action="start">Start</button>
@@ -35,8 +33,11 @@
   const topButtons = document.querySelectorAll('.topButton');
   const bottomButtons = document.querySelectorAll('.bottomButton');
 
-  let timerValue = 60*25;
-  let storedTime;
+  let isTimerRunning = false
+  let workSession = 1500; //default to pomodoro timer
+  let breakSession = 300; //default to short break timer
+  let timeLeftInSession =1500;
+  let startTimer;
 
   topButtons.forEach((button) => {
     button.addEventListener('click', topButtonClick)
@@ -46,40 +47,61 @@
     button.addEventListener('click', bottomButtonClick);
   });
 
+//setting the display and variables
   function topButtonClick(e) {
     let action = e.target.dataset.action;
     console.log(action);
     if (action === "pomdoro") {
+      isTimerRunning = false
       timerDisplay.textContent = "25:00";
-      timerValue = 60*25;
-    } else if (action === "shortBreak") {
+      timeLeftInSession = 1500;
+      clearInterval(startTimer);
+    }
+    if (action === "shortBreak") {
+      isTimerRunning = false
       timerDisplay.textContent = "05:00";
-      timerValue = 60*5;
-    } else {
+      timeLeftInSession = 300;
+      clearInterval(startTimer);
+    } 
+    if (action === "longBreak") {
+      isTimerRunning = false
       timerDisplay.textContent = "10:00";
-      timerValue = 60*10
+      timeLeftInSession = 600;
+      clearInterval(startTimer);
     }
   }
 
+  //starting, pausing, and resetting
   function bottomButtonClick(e) {
     let action = e.target.dataset.action;
     console.log(action);
     if (action === "start") {
-      startTimer(timerValue, timerDisplay);
-    } else if (action === "reset") {
-
-    } else {
-
+      startTimer = setInterval(function() {
+        timeLeftInSession--;
+        displayTimer();
+      }, 1000)
+      isTimerRunning = true;
+    }
+    if (action === "pause") {
+      clearInterval(startTimer);
+      isTimerRunning = false;
+    }
+    if (action === "reset") {
+      resetTimer();
     }
   }
 
-  function startTimer (duration, display) {
-    let timer = duration, minutes, seconds;
-    timerOn = true
-    timerOn = setInterval(function() {
-      let minutes = parseInt((timer/60), 10);
-      let seconds = parseInt((timer%60), 10);
-      if (minutes < 10) {
+  function resetTimer() {
+    clearInterval(startTimer);
+    isTimerRunning = false;
+    timeLeftInSession = 1500;
+    displayTimer();
+  }
+
+  function displayTimer() {
+    let minutes = parseInt((timeLeftInSession/60), 10);
+    let seconds = parseInt((timeLeftInSession%60), 10);
+    if (minutes < 10) {
         minutes = "0" + minutes;
       } else {
         minutes = minutes;
@@ -89,69 +111,9 @@
       } else {
         seconds = seconds;
       }
-      display.textContent = minutes + ":" + seconds
-      if (--timer < 0) {
-        timer = duration;
-      }
-      storedTime = timer;
-    }, 1000)
-  }
-
-  function pauseTimer(){
-    clearInterval(timerOn);
-  }
-
-
-/*
-window.onload = function() {
-  let twentyFiveMins = 60 * 25;
-  let display = document.querySelector('.timerContainer');
-  startTimer(twentyFiveMins, display)
-}*/
-
-/*
-  function setTimer() {
-    let minutes = parseInt((timer/60), 10);
-    let seconds = parseInt((timer%60), 10);
-    if (minutes > 10) {
-      minutes = "0" + minutes;
-    } else {
-      minutes = minutes;
-    }
-    if (seconds < 10) {
-      seconds = "0" + seconds;
-    } else {
-      seconds = seconds;
-    }
     timerDisplay.textContent = minutes + ":" + seconds
   }
 
-  function beginCountdown(duration, display) {
-    let timer = duration, minutes, seconds;
-    setInterval(function() {
-      let minutes = parseInt((timer/60), 10);
-      let seconds = parseInt((timer%60), 10);
-      if (minutes > 10) {
-        minutes = "0" + minutes;
-      } else {
-        minutes = minutes;
-      }
-      if (seconds < 10) {
-        seconds = "0" + seconds;
-      } else {
-        seconds = seconds;
-      }
-      timerDisplay.textContent = minutes + ":" + seconds
-    }, 1000);
-  }
-*/
-
-  let tester = document.querySelector('.testButton')
-  tester.addEventListener('click', buttonHit)
-
-  function buttonHit() {
-    console.log("hey")
-  }
 
 </script>
 
