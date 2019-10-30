@@ -4,6 +4,7 @@
 <head>
   <title>countdown timer</title>
   <link rel="stylesheet" href="styles.css">
+  <audio class="alarm" loop=false src="media-content/alarm.mp3"></audio>
 </head>
 
 <body>
@@ -18,7 +19,7 @@
   </div>
 
   <div class="timerContainer">
-    25:00
+    <span>25:00</span>
   </div>
   <div class="bottomButtonContainer">
     <button class="bottomButton" data-action="start">Start</button>
@@ -32,6 +33,7 @@
   const timerDisplay = document.querySelector('.timerContainer');
   const topButtons = document.querySelectorAll('.topButton');
   const bottomButtons = document.querySelectorAll('.bottomButton');
+  let alarmSound = document.querySelector('.alarm');
 
   let isTimerRunning = false
   let workSession = 1500; //default to pomodoro timer
@@ -79,6 +81,10 @@
       startTimer = setInterval(function() {
         timeLeftInSession--;
         displayTimer();
+        if (timeLeftInSession <= 0) {
+          clearInterval(startTimer);
+          playAlarm();
+        }
       }, 1000)
       isTimerRunning = true;
     }
@@ -114,6 +120,10 @@
     timerDisplay.textContent = minutes + ":" + seconds
   }
 
+  function playAlarm() {
+    alarmSound.loop = false;
+    alarmSound.play();
+  }
 
 </script>
 
